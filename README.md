@@ -12,7 +12,7 @@ This setup reflects core Infrastructure as Code practices used in real cloud and
 
 ## Architecture
 
-"
+'''text
                         Internet
                             |
                     Internet Gateway

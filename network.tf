@@ -1,4 +1,4 @@
-# Create VPC
+# VPC
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
 
@@ -7,25 +7,38 @@ resource "aws_vpc" "main" {
   }
 }
 
-# Public Subnet
+# Public Subnet 1
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "us-east-2a"
+
   tags = {
-    Name = "public-subnet"
+    Name = "public-subnet-1"
   }
 }
 
-# Private Subnet
+# Public Subnet 2
+resource "aws_subnet" "public2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.4.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = "us-east-2b"
+
+  tags = {
+    Name = "public-subnet-2"
+  }
+}
+
+# Private Subnet 1
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-2a"
 
   tags = {
-    Name = "private-subnet"
+    Name = "private-subnet-1"
   }
 }
 
@@ -45,11 +58,11 @@ resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "internet-gateway"
+    Name = "main-igw"
   }
 }
 
-# Route Table (for public subnet)
+# Public Route Table
 resource "aws_route_table" "public_rt" {
   vpc_id = aws_vpc.main.id
 
@@ -63,8 +76,14 @@ resource "aws_route_table" "public_rt" {
   }
 }
 
-# Associate Route Table with Public Subnet
-resource "aws_route_table_association" "public_assoc" {
+# Route Table Association for Public Subnet 1
+resource "aws_route_table_association" "public_assoc_1" {
   subnet_id      = aws_subnet.public.id
+  route_table_id = aws_route_table.public_rt.id
+}
+
+# Route Table Association for Public Subnet 2
+resource "aws_route_table_association" "public_assoc_2" {
+  subnet_id      = aws_subnet.public2.id
   route_table_id = aws_route_table.public_rt.id
 }

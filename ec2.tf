@@ -28,7 +28,7 @@ usermod -aG docker ec2-user
 mkdir -p /opt/5apps
 cd /opt/5apps
 
-git clone https://github.com/RareBreedxx/<YOUR-APP-REPO>.git app || true
+git clone https://github.com/RareBreedxx/5apps.git app
 cd app
 
 curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose

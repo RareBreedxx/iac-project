@@ -1,0 +1,6 @@
+region        = "us-east-2"
+instance_type = "t3.micro"
+key_name      = "iac-key"
+db_name       = "appdb"
+db_username   = "admin"
+db_password   = "ChangeMe12345!"

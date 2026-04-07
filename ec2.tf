@@ -16,13 +16,26 @@ resource "aws_instance" "web1" {
   key_name               = var.key_name
 
   user_data = <<-EOF
-              #!/bin/bash
-              dnf install -y nginx
-              systemctl enable nginx
-              systemctl start nginx
-              echo "Hello from web-server-1" > /usr/share/nginx/html/index.html
-              EOF
+#!/bin/bash
 
+dnf update -y
+dnf install -y docker git
+
+systemctl start docker
+systemctl enable docker
+usermod -aG docker ec2-user
+
+mkdir -p /opt/5apps
+cd /opt/5apps
+
+git clone https://github.com/RareBreedxx/<YOUR-APP-REPO>.git app || true
+cd app
+
+curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+docker compose up -d
+EOF 
   tags = {
     Name = "web-server-1"
   }

@@ -10,7 +10,7 @@ resource "aws_db_subnet_group" "main" {
 
 # RDS Instance
 resource "aws_db_instance" "main" {
-  identifier             = "main-rds-instance"
+  identifier             = "main-rds-instance-2"
   allocated_storage      = 20
   engine                 = "mysql"
   engine_version         = "8.0"

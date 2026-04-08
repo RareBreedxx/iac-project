@@ -2,35 +2,31 @@ pipeline {
     agent any
 
     stages {
-
         stage('SSH to EC2 and Deploy Apps') {
             steps {
                 sh '''
-                ssh -o StrictHostKeyChecking=no -i ~/iac-key.pem ec2-user@3.15.146.32 << 'EOF'
+ssh -o StrictHostKeyChecking=no -i /var/lib/jenkins/iac-key.pem ec2-user@3.15.146.32 <<'EOF'
+set -e
 
-                # Install Docker if not already installed
-                sudo dnf install -y docker git
-                sudo systemctl start docker
-                sudo systemctl enable docker
-                sudo usermod -aG docker ec2-user
+sudo dnf install -y docker git
+sudo systemctl enable docker
+sudo systemctl start docker
+sudo usermod -aG docker ec2-user
 
-                # Clean old app
-                rm -rf /opt/5apps
-                mkdir -p /opt/5apps
-                cd /opt/5apps
+sudo rm -rf /opt/5apps
+sudo mkdir -p /opt/5apps
+sudo chown -R ec2-user:ec2-user /opt/5apps
 
-                # Clone app repo
-                git clone https://github.com/RareBreedxx/5apps.git app
-                cd app
+cd /opt/5apps
+git clone https://github.com/RareBreedxx/5apps.git app
+cd /opt/5apps/app
 
-                # Install docker compose
-                sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-                sudo chmod +x /usr/local/bin/docker-compose
+sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 
-                # Run apps
-                docker compose up -d
-
-                EOF
+/usr/local/bin/docker-compose up -d
+docker ps
+EOF
                 '''
             }
         }

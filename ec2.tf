@@ -9,15 +9,15 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_instance" "web1" {
-  ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = var.instance_type
-  subnet_id              = aws_subnet.public.id
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-  key_name               = var.key_name
+  ami                         = data.aws_ami.amazon_linux.id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+  key_name                    = var.key_name
+  user_data_replace_on_change = true
 
   user_data = <<-EOF
 #!/bin/bash
-
 dnf update -y
 dnf install -y docker git
 
@@ -36,28 +36,35 @@ chmod +x /usr/local/bin/docker-compose
 
 docker compose up -d
 EOF
- user_data_replace_on_change = true
- 
+
   tags = {
     Name = "web-server-1"
   }
 }
 
 resource "aws_instance" "web2" {
-  ami                    = data.aws_ami.amazon_linux.id
-  instance_type          = var.instance_type
-  subnet_id              = aws_subnet.public2.id
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-  key_name               = var.key_name
+  ami                         = data.aws_ami.amazon_linux.id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public2.id
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+  key_name                    = var.key_name
+  user_data_replace_on_change = true
 
   user_data = <<-EOF
 #!/bin/bash
+dnf update -y
 dnf install -y nginx
+
 sed -i 's/listen       80;/listen       8080;/' /etc/nginx/nginx.conf
 sed -i 's/listen       \[::\]:80;/listen       [::]:8080;/' /etc/nginx/nginx.conf
+
 systemctl enable nginx
 systemctl start nginx
+
 echo "Hello from web-server-2" > /usr/share/nginx/html/index.html
 EOF
+
+  tags = {
+    Name = "web-server-2"
   }
 }

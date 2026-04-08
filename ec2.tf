@@ -51,15 +51,13 @@ resource "aws_instance" "web2" {
   key_name               = var.key_name
 
   user_data = <<-EOF
-              #!/bin/bash
-              dnf install -y nginx
-              systemctl enable nginx
-              systemctl start nginx
-              echo "Hello from web-server-2" > /usr/share/nginx/html/index.html
-              EOF
-  user_data_replace_on_change = true 
-
-  tags = {
-    Name = "web-server-2"
+#!/bin/bash
+dnf install -y nginx
+sed -i 's/listen       80;/listen       8080;/' /etc/nginx/nginx.conf
+sed -i 's/listen       \[::\]:80;/listen       [::]:8080;/' /etc/nginx/nginx.conf
+systemctl enable nginx
+systemctl start nginx
+echo "Hello from web-server-2" > /usr/share/nginx/html/index.html
+EOF
   }
 }

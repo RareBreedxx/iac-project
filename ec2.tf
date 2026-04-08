@@ -35,7 +35,9 @@ curl -L "https://github.com/docker/compose/releases/latest/download/docker-compo
 chmod +x /usr/local/bin/docker-compose
 
 docker compose up -d
-EOF 
+EOF
+ user_data_replace_on_change = true
+ 
   tags = {
     Name = "web-server-1"
   }
@@ -55,6 +57,7 @@ resource "aws_instance" "web2" {
               systemctl start nginx
               echo "Hello from web-server-2" > /usr/share/nginx/html/index.html
               EOF
+  user_data_replace_on_change = true 
 
   tags = {
     Name = "web-server-2"

@@ -27,6 +27,9 @@ sudo chmod +x /usr/local/bin/docker-compose
 export DOCKER_BUILDKIT=0
 export COMPOSE_DOCKER_CLI_BUILD=0
 
+/usr/local/bin/docker-compose down --remove-orphans || true
+docker rm -f node-app python-app php-app java-app static-app reverse-proxy || true
+
 /usr/local/bin/docker-compose build --no-cache
 /usr/local/bin/docker-compose up -d
 docker ps
